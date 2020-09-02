@@ -1,8 +1,7 @@
 from fastapi import FastAPI
+from .routes.actor_routes import Routes
+
 
 app = FastAPI()
 
-
-@app.get("/")
-def read_root():
-    return { "Hello": "World" }
+Routes().configure_routes(app)
