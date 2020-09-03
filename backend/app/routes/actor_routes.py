@@ -7,11 +7,10 @@ class Routes():
 
     def configure_routes(self, app):
 
-        @app.get("/")
-        def read_root():
-            return { "Hello": "World" }
-
-
-        @app.get("/actor/{name}")
+        @app.get("/actor/list/{name}")
         def get_actor_data(name: str):
-            return self.actor_controller.get_actor_data(name)
+            return self.actor_controller.get_actor_list(name)
+
+        @app.get("/actor/{id}")
+        def get_actor_data(id: str):
+            return self.actor_controller.get_actor_data(id)
