@@ -25,8 +25,8 @@ class ActorService():
         movieListByActor = self.__get_movieset_from_person(full_person)
 
         return [{
-            "actor": full_person.get('name'),
-            "actor_image": full_person.get('headshot'),
+            "person": full_person.get('name'),
+            "person_image": full_person.get('headshot'),
             "movies": movieListByActor
         }]
 
@@ -41,8 +41,7 @@ class ActorService():
         for movie in full_person_movieset:
             movieListByActor.append({
                 "title":  movie['title'],
-                "id": movie.movieID,
-                "cover": movie.get('cover url')
+                "id": movie.movieID
             })
 
         return movieListByActor
