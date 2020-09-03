@@ -45,10 +45,12 @@ class ActorService():
                 break
             movieID = movie.movieID
             cover_url = self.__get_movie_cover_url(movieID)
+            #cast = self.__get_movie_cast(movieID)
             movieListByActor.append({
                 "title":  movie['title'],
                 "id": movieID,
-                "cover url": cover_url
+                "cover url": cover_url#,
+                #"cast": cast
             })
             countMovies += 1
 
@@ -58,3 +60,29 @@ class ActorService():
         movie = self.imdb.get_movie(movieID)
         cover_url = movie.data["cover url"]
         return cover_url
+
+    def __get_movie_cast(self, movieID) -> List:
+        movie = self.imdb.get_movie(movieID)
+        cast = movie.get("cast")
+        if not cast:
+            return [] # it is posible that a movie has no cast
+        movieCast = []
+        maxCast = 6 # maximum 6 people to get
+        countCast = 0
+        for person in cast:
+            if countCast==maxCast:
+                break
+            id = person.personID
+            personData = self.imdb.get_person(id)
+            name = personData.get("name")
+            birth_place = personData.get("birth notes")
+            headshot = personData.get("headshot")
+            birth_date = personData.get("birth date")
+            movieCast.append({
+                "name": name,
+                "birth place": birth_place,
+                "birth date": birth_date,
+                "headshot": headshot
+            })
+            countCast += 1
+        return movieCast
