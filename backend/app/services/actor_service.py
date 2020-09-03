@@ -32,6 +32,8 @@ class ActorService():
 
     def __get_movieset_from_person(self, person) -> List:
         movieListByActor = []
+        maxMovies = 5 # maximun 5 movies to get
+        countMovies = 0
         
         try:
             full_person_movieset = next((item for item in person['filmography'] if item.get("actor")), None)['actor']
@@ -39,9 +41,12 @@ class ActorService():
             full_person_movieset = next((item for item in person['filmography'] if item.get("actress")), None)['actress']
 
         for movie in full_person_movieset:
+            if countMovies>=5:
+                break
             movieListByActor.append({
                 "title":  movie['title'],
                 "id": movie.movieID
             })
+            countMovies += 1
 
         return movieListByActor
