@@ -1,7 +1,7 @@
 version: '3'
 
 services:
-  django:
+  web:
     build:
       context: .
       dockerfile: ./Dockerfile
@@ -11,4 +11,5 @@ services:
     env_file:
       - ./.env
     ports:
-      - "8080:8080"
+      - 8080:8080
+      - 5678:5678
