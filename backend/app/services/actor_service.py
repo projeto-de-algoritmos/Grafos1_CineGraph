@@ -43,10 +43,18 @@ class ActorService():
         for movie in full_person_movieset:
             if countMovies>=5:
                 break
+            movieID = movie.movieID
+            cover_url = self.__get_movie_cover_url(movieID)
             movieListByActor.append({
                 "title":  movie['title'],
-                "id": movie.movieID
+                "id": movieID,
+                "cover url": cover_url
             })
             countMovies += 1
 
         return movieListByActor
+
+    def __get_movie_cover_url(self, movieID) -> str:
+        movie = self.imdb.get_movie(movieID)
+        cover_url = movie.data["cover url"]
+        return cover_url
