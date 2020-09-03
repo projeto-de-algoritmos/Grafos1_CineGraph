@@ -45,8 +45,10 @@ class ActorService():
                 break
             movieID = movie.movieID
             cover_url = self.__get_movie_cover_url(movieID)
+            movieYear = movie.get("year")
             movieListByActor.append({
                 "title":  movie['title'],
+                "year": movieYear,
                 "id": movieID,
                 "cover url": cover_url
             })
