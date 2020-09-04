@@ -12,9 +12,13 @@ class ActorService():
         actorList = []
         imdbActorList = self.imdb.search_person(actor_name, )
         
-        for people in imdbActorList:
+        for people in imdbActorList[0:6]:
+            headshot = people.get("headshot")
+            if not headshot:
+                headshot = "https://img.icons8.com/cotton/2x/person-male.png"
             actorList.append({
                 "name": people['name'],
+                "headshot": headshot,
                 "id": people.getID()
             })
 
