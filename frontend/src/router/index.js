@@ -4,12 +4,12 @@ import GraphHome from '../views/GraphHome.vue'
 
 Vue.use(VueRouter)
 
-  const routes = [
-  {
-    path: '/',
-    name: 'Home',
-    component: GraphHome
-  },
+const routes = [
+    {
+        path: '/',
+        name: 'Home',
+        component: GraphHome
+    },
 ]
 
 const router = new VueRouter({
