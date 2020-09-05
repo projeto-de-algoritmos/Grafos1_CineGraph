@@ -29,12 +29,18 @@ class ActorService():
         full_person = self.imdb.get_person(id, info=['main'])
         movieListByActor = self.__get_movieset_from_person(full_person)
         self.current_actor = full_person.get('name')
-        return [{
+
+        initial_structure = {
             "person": self.current_actor,
             "person_image": full_person.get('headshot'),
             "movies": movieListByActor,
             "person_id": full_person.getID()
-        }]
+        }
+
+        nodes = self.mount_graph_structure(initial_structure)
+        edges = self.mount_edges_structure(initial_structure)
+
+        return [nodes, edges]
 
     def __get_movieset_from_person(self, person) -> List:
         movieListByActor = []
@@ -67,3 +73,54 @@ class ActorService():
             }
 
         return [ _mount_data_cast(person) for person in movie if person.get('name') is not self.current_actor ]
+
+    def mount_graph_structure(self, data: dict) -> List:
+
+        nodes = []
+
+        nodes.append({
+            "person": data.get('person'),
+            "person_image": data.get('person_image'),
+            "person_id": data.get('person_id'),
+        })
+
+        for movie in data.get("movies"):
+            nodes.append({
+                "title":  movie.get('title'),
+                "id": movie.get("id"),
+                "cover": movie.get('cover'),
+            })
+
+            for person in movie.get("cast"):
+                if  self.__person_in_nodes_list(person, nodes):
+                    nodes.append({
+                        "person": person.get('person'),
+                        "person_image": person.get('person_image'),
+                        "person_id": person.get('person_id'),
+                    })
+
+        return nodes
+
+    def mount_edges_structure(self, data: dict) -> List:
+        edges = []
+
+        for movie in data.get("movies"):
+            edges.append({
+                "from":  data.get('person_id'),
+                "to": movie.get("id")
+            })
+
+            for person in movie.get("cast"):
+                
+                if  self.__edge_in_edge_list(person.get('person_id'), movie.get("id"), edges):
+                    edges.append({
+                        "from":  person.get('person_id'),
+                        "to": movie.get("id")
+                    })
+
+        return edges
+    def __edge_in_edge_list(self, fromId: str, toId: str, edgeList: List) -> bool:
+        return next((edge for edge  in edgeList if edge.get("from") == fromId and edge.get("to") == toId ), None) == None
+
+    def __person_in_nodes_list(self, person: dict, nodelist: List) -> bool:
+        return next((tempPerson for tempPerson in nodelist if tempPerson.get("person") == person.get("person")), None) == None
