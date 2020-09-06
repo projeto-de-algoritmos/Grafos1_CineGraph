@@ -2,16 +2,31 @@
 <template>
     <section>
         <v-container>
-            <GraphSearch/>
+            <GraphSearch
+                @selectedActor="changeCurrentActor"/>
+            
+            <GraphRender 
+                :actor="selectedActor"/>
         </v-container>
     </section>
 </template>
 
 <script>
 import GraphSearch from "./graph/GraphSearch"
+import GraphRender from "./graph/GraphRender"
+
 export default {
+    data: () => ({
+        selectedActor: ""
+    }), 
     components: {
-        GraphSearch
+        GraphSearch,
+        GraphRender
+    },
+    methods: {
+        changeCurrentActor(value) {
+            this.selectedActor = value
+        }
     }
 }
 </script>
