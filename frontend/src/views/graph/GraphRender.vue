@@ -1,16 +1,24 @@
 <template>
-    <section id="renderer">
-        <v-overlay :value="loading">
-            <v-progress-circular indeterminate size="64"></v-progress-circular>
-        </v-overlay>
-
-        <Network ref="network"
-            :nodes="nodes"
-            :edges="edges"
-            :options="options">
-        </Network>
-
-        <div id="graph" style="heigth: 100%"></div>
+    <section 
+        id="render-graph"
+        class="px-3">
+        <v-card class="render-graph-card">
+            <Network ref="network"
+                :nodes="nodes"
+                :edges="edges"
+                :options="options"
+                @select-node="onNodeSelected">
+            </Network>
+        
+            <v-overlay 
+                absolute
+                :value="loading">
+                <div class="d-flex flex-column align-center">
+                    <v-progress-circular indeterminate size="64"></v-progress-circular>
+                    <h2>Carregando dados da api. Isso pode levar algum tempo...</h2>
+                </div>
+            </v-overlay>
+        </v-card>
     </section>
 </template>
 
@@ -27,14 +35,14 @@ export default {
         Network
     },
     data: () => ({
-        "nodes": [],
-        "edges": [],
+        nodes: [],
+        edges: [],
         options: {
             nodes: {
-                borderWidth: 4
+                borderWidth: 2
             },
             edges: {
-                color: 'green'
+                arrows: 'to'
             }
         },
         loading: false,
@@ -54,6 +62,14 @@ export default {
             this.nodes = response.data.nodes
             this.edges = response.data.edges
         },
+        onNodeSelected(value) {
+            console.log(value)
+            this.showNodeInfo(value)
+        },
+        showNodeInfo(value) {
+            const result = this.$refs.network.nodes.get(value.nodes[0])
+            console.log(result)
+        }
     },
     watch: {
         actor: async function(val) {
@@ -70,11 +86,26 @@ export default {
 
 <style lang="scss">
 
-#renderer {
-    height: 750px;
+#render-graph {
+    width: 100%;
+    flex-grow: 1;
+    position: relative;
 
-    .vis-network {
-        height: 750px;
+    .render-graph-card {
+        height: 100%;
+        width: 100%;
+
+        > div {
+            height: 100%;
+            width: 100%;
+
+            canvas {
+                max-height: calc(100vh - 110px) !important;
+            }
+        }
+        .vis-network {
+            min-height: 650px !important;
+        }
     }
 }
 

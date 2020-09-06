@@ -1,13 +1,13 @@
 
 <template>
-    <section>
-        <v-container>
+    <section id="home-graph">
+        <div class="d-flex graph-container pa-4">
             <GraphSearch
                 @selectedActor="changeCurrentActor"/>
             
             <GraphRender 
                 :actor="selectedActor"/>
-        </v-container>
+        </div>
     </section>
 </template>
 
@@ -30,3 +30,15 @@ export default {
     }
 }
 </script>
+
+<style lang="scss">
+#home-graph {
+    height: 100%;
+    display: flex;
+
+    .graph-container {
+        overflow: hidden;
+        flex-grow: 1;
+    }
+}
+</style>

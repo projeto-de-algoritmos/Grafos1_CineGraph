@@ -1,6 +1,8 @@
 
 <template>
-    <section>
+    <section 
+        class="px-3"
+        id="search-graph">
         <v-autocomplete
             v-model="model"
             :items="entries"
@@ -25,6 +27,8 @@
                 </template>
             </template>
         </v-autocomplete>
+
+        
     </section>
 </template>
 
@@ -69,3 +73,9 @@ export default {
     }
 }
 </script>
+
+<style lang="scss">
+#search-graph {
+    width: 380px;
+}
+</style>
