@@ -53,23 +53,28 @@ export default {
             type: String,
             required: false,
             default: ""
+        },
+        actorLimit: {
+            type: Number,
+            required: false,
+            default: 8
         }
     },
     methods: {
         async getActorData(id) {
-            const response = await actorService.getActorDataById(id)
+            const response = await actorService.getActorDataById(id, this.actorLimit)
 
             this.nodes = response.data.nodes
             this.edges = response.data.edges
         },
         onNodeSelected(value) {
-            console.log(value)
-            this.showNodeInfo(value)
+            const payload = this.$refs.network.nodes.find(item => item.id == value.nodes[0])
+
+            this.$emit("selectedNode", {
+                type: payload.identificator,
+                id: payload.id
+            })
         },
-        showNodeInfo(value) {
-            const result = this.$refs.network.nodes.get(value.nodes[0])
-            console.log(result)
-        }
     },
     watch: {
         actor: async function(val) {

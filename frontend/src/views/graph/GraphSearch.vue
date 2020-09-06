@@ -3,6 +3,15 @@
     <section 
         class="px-3"
         id="search-graph">
+        <v-text-field
+            v-model="actorLimit"
+            label="Número limite de atores por filme"
+            placeholder="Evite colocar um número muito alto."
+            min="5"
+            max="50">
+
+        </v-text-field>
+
         <v-autocomplete
             v-model="model"
             :items="entries"
@@ -28,17 +37,37 @@
             </template>
         </v-autocomplete>
 
-        
+        <GraphItemDetails 
+            :type="type"
+            :item-id="itemId" />
+
     </section>
 </template>
 
 <script>
 import ActorService from "../../services/ActorService"
+import GraphItemDetails from "./GraphItemDetails"
 
 const actorService = new ActorService()
 
 export default {
+    props: {
+        itemId: {
+            type: String,
+            required: false,
+            default: ""
+        },
+        type: {
+            type: String,
+            required: false,
+            default: ""
+        }
+    },
+    components: {
+        GraphItemDetails
+    },
     data: () => ({
+        actorLimit: 8,
         entries: [],
         isLoading: false,
         model: "",
@@ -46,7 +75,10 @@ export default {
     }),
     methods: {
         getActor(value) {
-            this.$emit('selectedActor', value)
+            this.$emit('selectedActor', {
+                actor: value,
+                actorLimit: this.actorLimit
+            })
         }
     },
     watch: {
