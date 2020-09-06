@@ -12,10 +12,10 @@ class ActorController():
         except Exception:
             raise HTTPException(status_code=404, detail=Exception)
 
-    def get_actor_data(self, actor: str) -> List:
+    async def get_actor_data(self, actor: str) -> List:
         try:
-            actor_data = self.actor_service.get_actor_data(actor)
+            actor_data = await self.actor_service.get_actor_data(actor)
 
             return actor_data
         except Exception:
-            raise HTTPException(status_code=404, detail=Exception)
+            raise HTTPException(status_code=404, detail=Exception.args())

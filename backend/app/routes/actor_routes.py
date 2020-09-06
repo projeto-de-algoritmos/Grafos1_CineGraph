@@ -12,5 +12,5 @@ class Routes():
             return self.actor_controller.get_actor_list(name)
 
         @app.get("/actor/{id}")
-        def get_actor_data(id: str):
-            return self.actor_controller.get_actor_data(id)
+        async def get_actor_data(id: str):
+            return await self.actor_controller.get_actor_data(id)
