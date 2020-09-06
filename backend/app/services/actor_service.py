@@ -12,7 +12,7 @@ class ActorService():
         actorList = []
         imdbActorList = self.imdb.search_person(actor_name, )
         
-        for people in imdbActorList[0:6]:
+        for people in imdbActorList[0:10]:
             headshot = people.get("headshot")
             if not headshot:
                 headshot = "https://img.icons8.com/cotton/2x/person-male.png"
@@ -40,7 +40,10 @@ class ActorService():
         nodes = self.mount_graph_structure(initial_structure)
         edges = self.mount_edges_structure(initial_structure)
 
-        return [nodes, edges]
+        return {
+            "nodes": nodes, 
+            "edges": edges
+        }
 
     def __get_movieset_from_person(self, person) -> List:
         movieListByActor = []
@@ -56,7 +59,7 @@ class ActorService():
                 "title":  localMovie.get('title'),
                 "id": localMovie.movieID,
                 "cover": localMovie.get('cover'),
-                "cast": self.get_movie_cast(localMovie.get('cast')[0:5])
+                "cast": self.get_movie_cast(localMovie.get('cast')[0:7])
             })
 
         return movieListByActor
@@ -79,24 +82,24 @@ class ActorService():
         nodes = []
 
         nodes.append({
-            "person": data.get('person'),
-            "person_image": data.get('person_image'),
-            "person_id": data.get('person_id'),
+            "label": data.get('person'),
+            #"image": data.get('person_image'),
+            "id": data.get('person_id'),
         })
 
         for movie in data.get("movies"):
             nodes.append({
-                "title":  movie.get('title'),
+                "label":  movie.get('title'),
                 "id": movie.get("id"),
-                "cover": movie.get('cover'),
+                #"image": movie.get('cover'),
             })
 
             for person in movie.get("cast"):
                 if  self.__person_in_nodes_list(person, nodes):
                     nodes.append({
-                        "person": person.get('person'),
-                        "person_image": person.get('person_image'),
-                        "person_id": person.get('person_id'),
+                        "label": person.get('person'),
+                        #"image": person.get('person_image'),
+                        "id": person.get('person_id'),
                     })
 
         return nodes
@@ -123,4 +126,4 @@ class ActorService():
         return next((edge for edge  in edgeList if edge.get("from") == fromId and edge.get("to") == toId ), None) == None
 
     def __person_in_nodes_list(self, person: dict, nodelist: List) -> bool:
-        return next((tempPerson for tempPerson in nodelist if tempPerson.get("person") == person.get("person")), None) == None
+        return next((tempPerson for tempPerson in nodelist if tempPerson.get("label") == person.get("person")), None) == None
