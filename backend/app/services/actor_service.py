@@ -13,7 +13,7 @@ class ActorService():
 
     def get_actors_by_name(self, actor_name: str) -> List:
         actorList = []
-        imdbActorList = self.imdb.search_person(actor_name, )
+        imdbActorList = self.imdb.search_person(actor_name)
         
         for people in imdbActorList[0:10]:
             headshot = people.get("headshot") or self.actor_fallback_image
@@ -25,10 +25,10 @@ class ActorService():
 
         return actorList
 
-    async def get_actor_data(self, id: str) -> List:
+    async def get_actor_data(self, id: str, actor_number: int) -> List:
 
         full_person = self.imdb.get_person(id, info=['main'])
-        movieListByActor = await self.__get_movieset_from_person(full_person)
+        movieListByActor = await self.__get_movieset_from_person(full_person, actor_number)
         self.current_actor = full_person.get('name')
 
         initial_structure = {
@@ -46,7 +46,7 @@ class ActorService():
             "edges": edges
         }
 
-    async def __get_movieset_from_person(self, person) -> List:
+    async def __get_movieset_from_person(self, person, actor_number) -> List:
         movieListByActor = []
         
         try:
@@ -55,7 +55,7 @@ class ActorService():
             full_person_movieset = next((item for item in person['filmography'] if item.get("actress")), None)['actress']
 
         tasks = []
-        for movie in full_person_movieset[0:12]:
+        for movie in full_person_movieset[0:20]:
             task = asyncio.ensure_future(self.get_movie_data(movie.getID()))
             tasks.append(task)
 
@@ -67,7 +67,7 @@ class ActorService():
                 "title":  movie.get('title'),
                 "id": movie.movieID,
                 "cover": movie.get('cover') or self.movie_fallback_image,
-                "cast": self.get_movie_cast(movie.get('cast')[0:8])
+                "cast": self.get_movie_cast(movie.get('cast')[0:actor_number])
             })
 
         return movieListByActor
@@ -92,7 +92,9 @@ class ActorService():
         nodes.append({
             "label": data.get('person'),
             "id": data.get('person_id'),
-            "identificator": "person"
+            "identificator": "person",
+            "image": data.get('person_image'),
+            "shape": "circularImage",
         })
 
         for movie in data.get("movies"):
@@ -132,6 +134,26 @@ class ActorService():
                     })
 
         return edges
+
+    async def get_movie_info(self, movieId: str) -> dict:
+        movieData = await self.get_movie_data(movieId)
+
+        return {
+            "title": movieData.get("title"),
+            "cover": movieData.get("cover") or self.movie_fallback_image,
+            "plot": movieData.get("plot outline"),
+            "year": movieData.get("year")
+        }
+
+    def get_actor_info(self, actorId: str) -> dict:
+
+        full_person = self.imdb.get_person(actorId, info=['main'])
+
+        return {
+            "name": full_person.get("name"),
+            "image": full_person.get("headshot") or self.actor_fallback_image
+        }
+
     def __edge_in_edge_list(self, fromId: str, toId: str, edgeList: List) -> bool:
         return next((edge for edge  in edgeList if edge.get("from") == fromId and edge.get("to") == toId ), None) == None
 

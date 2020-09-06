@@ -7,6 +7,7 @@ from .config.debug import debug_configurations
 
 config = Config().config
 app = FastAPI()
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins="*",
