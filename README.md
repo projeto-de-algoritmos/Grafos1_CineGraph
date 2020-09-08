@@ -134,6 +134,12 @@ Caso tudo ocorra com sucesso você terá uma tela parecida com a abaixo:
 
 Antes de usar, faça a [instalação](#Instalação) do projeto.
 
+Você pode assistir o vídeo a seguir para entender como utilizar
+o projeto.
+
+- Download na pasta `img/Como usar o projeto .mp4` ou
+- Assista pelo YouTube: https://www.youtube.com/watch?v=eMK0vTBULAE&feature=youtu.be
+
 1. Abra o navegador web de sua escolha;<br>
 2. Digite na barra de busca o endereço informado pelo frontend (por padrão `http://localhost:8080/` caso você não tenha nenhuma outra aplicação utilizando essa porta);
 3. (Opcional) Escolha o limite de atores que devem ser retornados por filme (8 por padrão);
