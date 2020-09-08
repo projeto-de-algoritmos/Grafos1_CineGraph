@@ -23,8 +23,7 @@
             item-text="name"
             item-value="id"
             label="Ator/Atriz"
-            placeholder="Digite para inicar a busca"
-            prepend-icon="mdi-database-search">
+            placeholder="Digite para inicar a busca">
             <template v-slot:item="data">
                 <template v-if="data.item">
                     <v-list-item-avatar>
@@ -37,16 +36,22 @@
             </template>
         </v-autocomplete>
 
+        <GraphSearchActor 
+            v-if="nodes.length"/>
+        
         <GraphItemDetails 
             :type="type"
             :item-id="itemId" />
+
 
     </section>
 </template>
 
 <script>
+import GraphSearchActor from "./GraphSearchActor"
 import ActorService from "../../services/ActorService"
 import GraphItemDetails from "./GraphItemDetails"
+import { mapState } from "vuex"
 
 const actorService = new ActorService()
 
@@ -64,7 +69,8 @@ export default {
         }
     },
     components: {
-        GraphItemDetails
+        GraphItemDetails,
+        GraphSearchActor
     },
     data: () => ({
         actorLimit: 8,
@@ -73,6 +79,9 @@ export default {
         model: "",
         search: null,
     }),
+    computed: {
+        ...mapState(['nodes'])
+    },
     methods: {
         getActor(value) {
             this.$emit('selectedActor', {

@@ -26,7 +26,7 @@
 import ActorService from '../../services/ActorService'
 import { Network } from "vue-vis-network";
 import "vue-vis-network/node_modules/vis-network/dist/vis-network.css";
-
+import { mapActions, mapState } from "vuex"
 
 const actorService = new ActorService()
 
@@ -34,20 +34,6 @@ export default {
     components: {
         Network
     },
-    data: () => ({
-        nodes: [],
-        edges: [],
-        options: {
-            nodes: {
-                borderWidth: 2
-            },
-            edges: {
-                arrows: 'to'
-            }
-        },
-        loading: false,
-        network: undefined,
-    }),
     props: {
         actor: {
             type: String,
@@ -60,12 +46,28 @@ export default {
             default: 8
         }
     },
+    data: () => ({
+        options: {
+            nodes: {
+                borderWidth: 2
+            },
+            edges: {
+                arrows: 'to'
+            }
+        },
+        loading: false,
+        network: undefined,
+    }),
+    computed: {
+        ...mapState(['nodes', 'edges'])
+    },
     methods: {
+        ...mapActions(["setNodes", "setEdges"]),
         async getActorData(id) {
             const response = await actorService.getActorDataById(id, this.actorLimit)
 
-            this.nodes = response.data.nodes
-            this.edges = response.data.edges
+            this.setNodes(response.data.nodes)
+            this.setEdges(response.data.edges)
         },
         onNodeSelected(value) {
             const payload = this.$refs.network.nodes.find(item => item.id == value.nodes[0])

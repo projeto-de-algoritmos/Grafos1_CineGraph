@@ -3,14 +3,16 @@
         <div v-if="type && type === 'person'">
             <v-card>
                 <img :src="actor.image" alt="" class="img">
-                <h2>{{ actor.name }}</h2>
+                <h2 class="pa-2">{{ actor.name }}</h2>
             </v-card>
         </div>
         <div v-else-if="type && type === 'movie'">
             <v-card>
                 <img :src="movie.cover" alt="" class="img">
-                <h2>{{ movie.title }} - {{ movie.year }}</h2>
-                <h4>{{ movie.plot }}</h4>
+                <div class="pa-2">
+                    <h2>{{ movie.title }} - {{ movie.year }}</h2>
+                    <h4>{{ movie.plot }}</h4>
+                </div>
             </v-card>
         </div>
         <v-overlay 
@@ -73,7 +75,6 @@ export default {
     },
     watch: {
         itemId: async function(val) {
-            debugger
             if (val) {
                 if (this.type && this.type === 'movie') {
                     this.loading = true

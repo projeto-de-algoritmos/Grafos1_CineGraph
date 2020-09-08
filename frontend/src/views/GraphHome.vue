@@ -36,7 +36,6 @@ export default {
             this.actorLimit = value.actorLimit
         },
         changeValues({ type, id }) {
-            debugger
             this.type = type
             this.itemId = id
         }
