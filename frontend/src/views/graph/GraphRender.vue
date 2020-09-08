@@ -14,8 +14,8 @@
                 absolute
                 :value="loading">
                 <div class="d-flex flex-column align-center">
-                    <v-progress-circular indeterminate size="64"></v-progress-circular>
-                    <h2>Carregando dados da api. Isso pode levar algum tempo...</h2>
+                    <v-progress-circular v-if="spinning" indeterminate size="64"></v-progress-circular>
+                    <h2>{{ overlayMesage }}</h2>
                 </div>
             </v-overlay>
         </v-card>
@@ -57,6 +57,8 @@ export default {
         },
         loading: false,
         network: undefined,
+        spinning: false,
+        overlayMesage: ""
     }),
     computed: {
         ...mapState(['nodes', 'edges'])
@@ -64,10 +66,17 @@ export default {
     methods: {
         ...mapActions(["setNodes", "setEdges"]),
         async getActorData(id) {
-            const response = await actorService.getActorDataById(id, this.actorLimit)
-
-            this.setNodes(response.data.nodes)
-            this.setEdges(response.data.edges)
+            try {
+                const response = await actorService.getActorDataById(id, this.actorLimit)
+    
+                this.setNodes(response.data.nodes)
+                this.setEdges(response.data.edges)
+                this.loading = false
+                this.spinning = false
+            } catch (error) {
+                this.overlayMesage = "Erro ao carregar dados do backend. A pessoa pesquisada não é um ator/atriz. Por favor tente novamente"
+                this.spinning = false
+            }
         },
         onNodeSelected(value) {
             const payload = this.$refs.network.nodes.find(item => item.id == value.nodes[0])
@@ -82,8 +91,9 @@ export default {
         actor: async function(val) {
             if (val) {
                 this.loading = true
+                this.spinning = true
+                this.overlayMesage = "Carregando dados da api. Isso pode levar algum tempo..."
                 await this.getActorData(val)
-                this.loading = false
             }
         }
     }
